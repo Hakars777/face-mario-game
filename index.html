@@ -35,6 +35,15 @@ body {
     justify-content: center;
     gap: 16px;
 }
+body.records-disabled #page-shell {
+    width: min(980px, 100%);
+}
+body.records-disabled #leaderboard-panel {
+    display: none;
+}
+body.records-disabled #app-shell {
+    width: min(980px, 100%);
+}
 #leaderboard-panel {
     width: 320px;
     max-width: 100%;
@@ -436,12 +445,19 @@ canvas {
         overflow-y: auto;
         touch-action: pan-y;
     }
+    body.records-disabled {
+        overflow-y: hidden;
+        touch-action: none;
+    }
     #page-shell {
         width: 100%;
         gap: 10px;
     }
     #app-shell {
         gap: 6px;
+    }
+    body.records-disabled #app-shell {
+        width: 100%;
     }
     #leaderboard-panel {
         width: 100%;
@@ -610,9 +626,13 @@ canvas {
 </div>
 
 <script>
+const RECORDS_ENABLED = false;
 const PLAYER_NAME_STORAGE_KEY = 'faceMarioPlayerName';
 const PLAYER_STATE_STORAGE_KEY = 'faceMarioPlayerState';
 const LEADERBOARD_CACHE_STORAGE_KEY = 'faceMarioLeaderboardCache';
+if (!RECORDS_ENABLED) {
+    document.body.classList.add('records-disabled');
+}
 const appShell = document.getElementById('app-shell');
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -933,6 +953,7 @@ function isCoarsePointer() {
 }
 
 function readStorage(key, fallback = null) {
+    if (!RECORDS_ENABLED) return fallback;
     try {
         const raw = localStorage.getItem(key);
         return raw ? JSON.parse(raw) : fallback;
@@ -942,6 +963,7 @@ function readStorage(key, fallback = null) {
 }
 
 function writeStorage(key, value) {
+    if (!RECORDS_ENABLED) return;
     try {
         localStorage.setItem(key, JSON.stringify(value));
     } catch (_err) {
@@ -957,6 +979,7 @@ function formatOutcome(outcome) {
 }
 
 function syncLocalPlayerState() {
+    if (!RECORDS_ENABLED) return;
     writeStorage(PLAYER_STATE_STORAGE_KEY, {
         name: currentPlayerName,
         ip: currentPlayerIp,
@@ -965,10 +988,12 @@ function syncLocalPlayerState() {
 }
 
 function syncLeaderboardCache() {
+    if (!RECORDS_ENABLED) return;
     writeStorage(LEADERBOARD_CACHE_STORAGE_KEY, leaderboardEntries.slice(0, 20));
 }
 
 function renderLocalPlayerStats() {
+    if (!RECORDS_ENABLED) return;
     localBestValueEl.textContent = `${localPlayerStats.bestScore} pts • W${localPlayerStats.bestWorld}`;
     lastRunValueEl.textContent = localPlayerStats.updatedAt
         ? `${localPlayerStats.lastScore} pts • W${localPlayerStats.lastWorld} • ${formatOutcome(localPlayerStats.lastOutcome)}`
@@ -976,6 +1001,7 @@ function renderLocalPlayerStats() {
 }
 
 function restoreLocalCache() {
+    if (!RECORDS_ENABLED) return;
     let cachedPlayerName = '';
     try {
         cachedPlayerName = localStorage.getItem(PLAYER_NAME_STORAGE_KEY) || '';
@@ -1011,6 +1037,7 @@ function restoreLocalCache() {
 }
 
 function updateLocalScoreSnapshot(outcome) {
+    if (!RECORDS_ENABLED) return;
     localPlayerStats.lastScore = score;
     localPlayerStats.lastWorld = currentWorld + 1;
     localPlayerStats.lastOutcome = outcome;
@@ -1029,6 +1056,7 @@ function updateLocalScoreSnapshot(outcome) {
 }
 
 function syncLocalBestFromServer(playerData) {
+    if (!RECORDS_ENABLED) return;
     if (!playerData) return;
 
     const remoteBestScore = Math.max(0, Number(playerData.bestScore) || 0);
@@ -1044,19 +1072,21 @@ function syncLocalBestFromServer(playerData) {
 }
 
 function setPlayerStatus(message, tone = 'info') {
+    if (!RECORDS_ENABLED) return;
     playerStatusEl.textContent = message;
     playerStatusEl.dataset.tone = tone;
 }
 
 function renderCurrentPlayer() {
-    const visibleName = currentPlayerName || 'Not selected';
+    const visibleName = RECORDS_ENABLED ? (currentPlayerName || 'Not selected') : 'Player';
     currentPlayerValueEl.textContent = visibleName;
-    playerNameLabelEl.textContent = currentPlayerName || 'No player';
-    currentIpValueEl.textContent = currentPlayerIp || 'Detecting...';
-    playerStartBtn.textContent = currentPlayerName ? 'Start / Restart' : 'Start Game';
+    playerNameLabelEl.textContent = RECORDS_ENABLED ? (currentPlayerName || 'No player') : 'Player';
+    currentIpValueEl.textContent = RECORDS_ENABLED ? (currentPlayerIp || 'Detecting...') : 'Disabled';
+    playerStartBtn.textContent = RECORDS_ENABLED ? (currentPlayerName ? 'Start / Restart' : 'Start Game') : 'Play';
 }
 
 function renderLeaderboard() {
+    if (!RECORDS_ENABLED) return;
     leaderboardListEl.textContent = '';
 
     if (!leaderboardEntries.length) {
@@ -1102,6 +1132,7 @@ function renderLeaderboard() {
 }
 
 function applyLeaderboardResponse(data) {
+    if (!RECORDS_ENABLED) return;
     if (Array.isArray(data?.leaderboard)) {
         leaderboardEntries = data.leaderboard;
         syncLeaderboardCache();
@@ -1146,6 +1177,7 @@ async function requestJson(url, options = {}) {
 }
 
 async function loadLeaderboard(showStatus = false) {
+    if (!RECORDS_ENABLED) return;
     if (showStatus) {
         setPlayerStatus('Refreshing records...', 'info');
     }
@@ -1184,6 +1216,12 @@ async function loadLeaderboard(showStatus = false) {
 }
 
 async function beginPlayerSession(rawName) {
+    if (!RECORDS_ENABLED) {
+        currentPlayerName = 'Player';
+        renderCurrentPlayer();
+        startGame();
+        return;
+    }
     if (!booted) {
         setPlayerStatus('Game assets are still loading. Try again in a moment.', 'info');
         return;
@@ -1245,6 +1283,7 @@ async function beginPlayerSession(rawName) {
 }
 
 async function submitCurrentScore(outcome) {
+    if (!RECORDS_ENABLED) return;
     if (scoreSubmittedForRun || !currentPlayerName) return;
     scoreSubmittedForRun = true;
     updateLocalScoreSnapshot(outcome);
@@ -1294,6 +1333,12 @@ function setPauseReason(title, subtitle) {
 }
 
 function setReadyState(message = 'Enter a participant name before starting the game.') {
+    if (!RECORDS_ENABLED) {
+        currentPlayerName = 'Player';
+        renderCurrentPlayer();
+        startGame();
+        return;
+    }
     gameState = 'ready';
     clearTouchMovement();
     stopBGM();
@@ -1325,6 +1370,17 @@ function bootGame() {
     if (booted) return;
     booted = true;
     playerStartBtn.disabled = false;
+
+    if (!RECORDS_ENABLED) {
+        currentPlayerName = 'Player';
+        renderCurrentPlayer();
+        if (!loopStarted) {
+            loopStarted = true;
+            loop();
+        }
+        startGame();
+        return;
+    }
 
     score = 0;
     lives = 3;
@@ -1427,9 +1483,13 @@ function restartGame() {
     stopMp3(dieAudio);
     stopMp3(winAudio);
     stopMp3(gameOverAudio);
-    if (!currentPlayerName) {
+    if (RECORDS_ENABLED && !currentPlayerName) {
         setReadyState('Enter a participant name before starting the game.');
         return;
+    }
+    if (!currentPlayerName) {
+        currentPlayerName = 'Player';
+        renderCurrentPlayer();
     }
     gameState = 'playing';
     refreshHudState();
@@ -2301,7 +2361,7 @@ function draw() {
         ctx.textAlign = 'center'; ctx.fillText('Loading faces...', 400, 240);
         ctx.textAlign = 'left';
     }
-    if (gameState === 'ready') {
+    if (RECORDS_ENABLED && gameState === 'ready') {
         overlay('rgba(0,0,0,0.58)');
         bigText('ENTER PLAYER NAME', '#FFD700', 195);
         smallText('Use the records panel to join the game', '#FFF', 258);
@@ -2326,9 +2386,14 @@ let loopStarted = false;
 function loop() { frameCount++; update(); draw(); requestAnimationFrame(loop); }
 
 function startGame() {
-    if (!currentPlayerName) {
+    if (RECORDS_ENABLED && !currentPlayerName) {
         setReadyState('Enter a participant name before starting the game.');
         return;
+    }
+
+    if (!currentPlayerName) {
+        currentPlayerName = 'Player';
+        renderCurrentPlayer();
     }
 
     score = 0; lives = 3; gameState = 'playing';
@@ -2345,11 +2410,15 @@ function startGame() {
 }
 
 playerStartBtn.disabled = true;
-restoreLocalCache();
+if (RECORDS_ENABLED) {
+    restoreLocalCache();
+}
 renderCurrentPlayer();
 renderLocalPlayerStats();
 renderLeaderboard();
-loadLeaderboard(false);
+if (RECORDS_ENABLED) {
+    loadLeaderboard(false);
+}
 refreshHudState();
 syncViewport();
 requestAnimationFrame(syncViewport);
