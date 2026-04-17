@@ -15,6 +15,7 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 button { font: inherit; touch-action: manipulation; }
+input { font: inherit; }
 body {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     display: flex; flex-direction: column;
@@ -25,18 +26,190 @@ body {
     padding: 12px 12px calc(12px + var(--safe-bottom));
     gap: 8px;
 }
+#page-shell {
+    width: min(1380px, 100%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px;
+}
+#leaderboard-panel {
+    width: 320px;
+    max-width: 100%;
+    flex: 0 0 320px;
+    border-radius: 22px;
+    border: 2px solid rgba(255, 215, 0, 0.32);
+    background: linear-gradient(180deg, rgba(18,28,54,0.96), rgba(8,12,24,0.96));
+    box-shadow: 0 18px 42px rgba(0,0,0,0.3);
+    padding: 18px 16px;
+    color: #EAF2FF;
+}
+#leaderboard-title {
+    color: #FFD700;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+}
+#leaderboard-subtitle {
+    margin-top: 6px;
+    color: #9FB3D8;
+    font-size: 13px;
+    line-height: 1.45;
+}
+#player-form {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#playerNameInput {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(10,18,38,0.95);
+    color: #FFF;
+    outline: none;
+}
+#playerNameInput::placeholder {
+    color: rgba(255,255,255,0.45);
+}
+#playerNameInput:focus {
+    border-color: rgba(255,215,0,0.8);
+    box-shadow: 0 0 0 3px rgba(255,215,0,0.14);
+}
+#player-form-actions {
+    display: flex;
+    gap: 8px;
+}
+.panel-btn {
+    flex: 1 1 auto;
+    border: 0;
+    border-radius: 12px;
+    padding: 11px 12px;
+    cursor: pointer;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #FFD54F, #FFB300);
+    color: #1C1400;
+}
+.panel-btn.secondary {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #FFF4C7;
+}
+#player-status {
+    min-height: 18px;
+    margin-top: 10px;
+    color: #9DB3DA;
+    font-size: 12px;
+    line-height: 1.4;
+}
+#player-status[data-tone="success"] {
+    color: #A8FF91;
+}
+#player-status[data-tone="error"] {
+    color: #FFABAB;
+}
+.player-meta-row {
+    margin-top: 8px;
+    padding: 9px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+}
+.player-meta-row span {
+    color: #9DB3DA;
+}
+.player-meta-row strong {
+    color: #FFD700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+#records-header {
+    margin-top: 18px;
+    color: #FFD700;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+}
+#leaderboard-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: calc(var(--game-height) - 8px);
+    overflow: auto;
+    padding-right: 4px;
+}
+.record-item {
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
+    padding: 10px 11px;
+}
+.record-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+.record-rank {
+    color: #FFD700;
+    font-weight: 800;
+    min-width: 28px;
+}
+.record-name {
+    flex: 1 1 auto;
+    color: #FFF;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+.record-score {
+    color: #A8FF91;
+    font-weight: 800;
+    white-space: nowrap;
+}
+.record-ip {
+    margin-top: 6px;
+    color: #A9C1EA;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+.record-meta {
+    margin-top: 4px;
+    color: #839CCA;
+    font-size: 12px;
+}
+#leaderboard-empty {
+    border-radius: 14px;
+    border: 1px dashed rgba(255,255,255,0.14);
+    color: #9DB3DA;
+    padding: 14px 12px;
+    font-size: 13px;
+    line-height: 1.45;
+}
 #app-shell {
+    flex: 0 1 auto;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    min-width: 0;
 }
 #ui {
     color: #FFD700; font-size: clamp(13px, 3vw, 20px); font-weight: bold;
     text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
     letter-spacing: 2px; text-align: center; width: 100%;
     padding: 0 8px; line-height: 1.35;
+}
+#playerNameLabel {
+    color: #FFF;
 }
 #game-stage {
     width: var(--game-width);
@@ -231,16 +404,40 @@ canvas {
 @media (max-width: 820px), (pointer: coarse) {
     #touch-controls { display: flex; }
 }
+@media (max-width: 1100px) {
+    #page-shell {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    #leaderboard-panel {
+        width: min(var(--game-width), calc(100vw - 24px));
+        flex: none;
+    }
+    #leaderboard-list {
+        max-height: 240px;
+    }
+}
 @media (max-width: 820px) {
     body {
         padding: 10px 10px calc(10px + var(--safe-bottom));
         gap: 6px;
+    }
+    #page-shell {
+        gap: 10px;
+    }
+    #leaderboard-panel {
+        padding: 14px 12px;
+        border-radius: 18px;
     }
     #ui { letter-spacing: 1px; }
     #controls { font-size: 11px; gap: 6px 8px; }
     #controls .kb-hint { display: none; }
     #controls .mobile-hint { display: inline; }
     #hud-buttons { top: 8px; right: 8px; }
+    #player-form-actions {
+        flex-direction: column;
+    }
 }
 @media (max-width: 540px), (max-height: 680px) {
     :root { --touch-size: clamp(48px, 14vw, 64px); }
@@ -259,6 +456,9 @@ canvas {
     .pause-action {
         padding: 11px 12px;
         font-size: 14px;
+    }
+    #leaderboard-title {
+        font-size: 20px;
     }
 }
 @media (orientation: landscape) and (max-height: 540px) {
@@ -287,49 +487,87 @@ canvas {
 </style>
 </head>
 <body>
-<div id="app-shell">
-    <div id="ui">
-        🌍 <span id="worldNum">World 1</span>
-        &nbsp;&nbsp;⭐ <span id="score">0</span>
-        &nbsp;&nbsp;❤️ <span id="lives">3</span>
-        &nbsp;&nbsp;👊 Left: <span id="enemies">0</span>
-    </div>
-    <div id="game-stage">
-        <div id="game-wrapper">
-            <canvas id="game" width="800" height="500"></canvas>
-            <div id="hud-buttons">
-                <button id="fullscreenBtn" class="hud-btn" type="button" title="Enter fullscreen" aria-label="Enter fullscreen">⛶</button>
-                <button id="pauseBtn" class="hud-btn" type="button" title="Pause" aria-label="Pause">❚❚</button>
+<div id="page-shell">
+    <aside id="leaderboard-panel">
+        <div id="leaderboard-title">Players & Records</div>
+        <div id="leaderboard-subtitle">Before the game, enter a participant name. Best scores are shown with the server-detected IP.</div>
+        <form id="player-form">
+            <input id="playerNameInput" type="text" maxlength="32" placeholder="Enter participant name" autocomplete="nickname">
+            <div id="player-form-actions">
+                <button id="playerStartBtn" class="panel-btn" type="submit">Start Game</button>
+                <button id="refreshLeaderboardBtn" class="panel-btn secondary" type="button">Refresh</button>
             </div>
-            <div id="pause-menu" aria-hidden="true">
-                <div class="pause-card">
-                    <div id="pause-title">Paused</div>
-                    <div id="pause-subtitle">Take a breath. Tap Continue or press P to keep going.</div>
-                    <div id="pause-actions">
-                        <button id="resumeBtn" class="pause-action" type="button">Continue</button>
-                        <button id="pauseFullscreenBtn" class="pause-action secondary" type="button">Enter Fullscreen</button>
-                        <button id="restartBtn" class="pause-action secondary" type="button">Restart World 1</button>
+        </form>
+        <div id="player-status" data-tone="info">Loading records...</div>
+        <div class="player-meta-row">
+            <span>Current player</span>
+            <strong id="currentPlayerValue">Not selected</strong>
+        </div>
+        <div class="player-meta-row">
+            <span>Your IP</span>
+            <strong id="currentIpValue">Detecting...</strong>
+        </div>
+        <div class="player-meta-row">
+            <span>Local best</span>
+            <strong id="localBestValue">0 pts • W1</strong>
+        </div>
+        <div class="player-meta-row">
+            <span>Last run</span>
+            <strong id="lastRunValue">No runs saved</strong>
+        </div>
+        <div id="records-header">Top records</div>
+        <div id="leaderboard-list">
+            <div id="leaderboard-empty">No participants yet. Enter the first name and start the game.</div>
+        </div>
+    </aside>
+    <div id="app-shell">
+        <div id="ui">
+            🌍 <span id="worldNum">World 1</span>
+            &nbsp;&nbsp;⭐ <span id="score">0</span>
+            &nbsp;&nbsp;❤️ <span id="lives">3</span>
+            &nbsp;&nbsp;👊 Left: <span id="enemies">0</span>
+            &nbsp;&nbsp;👤 <span id="playerNameLabel">No player</span>
+        </div>
+        <div id="game-stage">
+            <div id="game-wrapper">
+                <canvas id="game" width="800" height="500"></canvas>
+                <div id="hud-buttons">
+                    <button id="fullscreenBtn" class="hud-btn" type="button" title="Enter fullscreen" aria-label="Enter fullscreen">⛶</button>
+                    <button id="pauseBtn" class="hud-btn" type="button" title="Pause" aria-label="Pause">❚❚</button>
+                </div>
+                <div id="pause-menu" aria-hidden="true">
+                    <div class="pause-card">
+                        <div id="pause-title">Paused</div>
+                        <div id="pause-subtitle">Take a breath. Tap Continue or press P to keep going.</div>
+                        <div id="pause-actions">
+                            <button id="resumeBtn" class="pause-action" type="button">Continue</button>
+                            <button id="pauseFullscreenBtn" class="pause-action secondary" type="button">Enter Fullscreen</button>
+                            <button id="restartBtn" class="pause-action secondary" type="button">Restart World 1</button>
+                        </div>
+                        <div class="pause-help">Keyboard: P to pause, F for fullscreen, R to restart after game over.</div>
                     </div>
-                    <div class="pause-help">Keyboard: P to pause, F for fullscreen, R to restart after game over.</div>
                 </div>
             </div>
-        </div>
-        <div id="touch-controls">
-            <div id="dpad">
-                <button id="btn-left">◀</button>
-                <button id="btn-right">▶</button>
+            <div id="touch-controls">
+                <div id="dpad">
+                    <button id="btn-left">◀</button>
+                    <button id="btn-right">▶</button>
+                </div>
+                <button id="btn-jump">▲<br>JUMP</button>
             </div>
-            <button id="btn-jump">▲<br>JUMP</button>
         </div>
-    </div>
-    <div id="controls">
-        <span class="kb-hint">← → Move &nbsp;|&nbsp; ↑ or SPACE — Jump &nbsp;|&nbsp; P — Pause &nbsp;|&nbsp; F — Fullscreen</span>
-        <span class="mobile-hint">Touch buttons: left/right to move, jump to hop, top-right icons for pause and fullscreen.</span>
-        <button id="muteBtn" onclick="toggleMute()">🔊 Mute</button>
+        <div id="controls">
+            <span class="kb-hint">← → Move &nbsp;|&nbsp; ↑ or SPACE — Jump &nbsp;|&nbsp; P — Pause &nbsp;|&nbsp; F — Fullscreen</span>
+            <span class="mobile-hint">Touch buttons: left/right to move, jump to hop, top-right icons for pause and fullscreen.</span>
+            <button id="muteBtn" onclick="toggleMute()">🔊 Mute</button>
+        </div>
     </div>
 </div>
 
 <script>
+const PLAYER_NAME_STORAGE_KEY = 'faceMarioPlayerName';
+const PLAYER_STATE_STORAGE_KEY = 'faceMarioPlayerState';
+const LEADERBOARD_CACHE_STORAGE_KEY = 'faceMarioLeaderboardCache';
 const appShell = document.getElementById('app-shell');
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -350,6 +588,17 @@ const pauseSubtitleEl = document.getElementById('pause-subtitle');
 const resumeBtn = document.getElementById('resumeBtn');
 const pauseFullscreenBtn = document.getElementById('pauseFullscreenBtn');
 const restartBtn = document.getElementById('restartBtn');
+const playerForm = document.getElementById('player-form');
+const playerNameInput = document.getElementById('playerNameInput');
+const playerStartBtn = document.getElementById('playerStartBtn');
+const refreshLeaderboardBtn = document.getElementById('refreshLeaderboardBtn');
+const playerStatusEl = document.getElementById('player-status');
+const currentPlayerValueEl = document.getElementById('currentPlayerValue');
+const currentIpValueEl = document.getElementById('currentIpValue');
+const localBestValueEl = document.getElementById('localBestValue');
+const lastRunValueEl = document.getElementById('lastRunValue');
+const leaderboardListEl = document.getElementById('leaderboard-list');
+const playerNameLabelEl = document.getElementById('playerNameLabel');
 const scoreEl  = document.getElementById('score');
 const livesEl  = document.getElementById('lives');
 const enemyEl  = document.getElementById('enemies');
@@ -364,13 +613,14 @@ const IMG_FILES = {
 };
 const imgs = {};
 let loaded = 0, total = Object.keys(IMG_FILES).length;
+let booted = false;
 for (const [name, src] of Object.entries(IMG_FILES)) {
     const img = new Image();
-    img.onload = img.onerror = () => { if (++loaded >= total) startGame(); };
+    img.onload = img.onerror = () => { if (++loaded >= total) bootGame(); };
     img.src = src;
     imgs[name] = img;
 }
-setTimeout(() => { if (loaded < total) startGame(); }, 2500);
+setTimeout(() => { if (!booted) bootGame(); }, 2500);
 
 /* ─── Audio ──────────────────────────────────────────────── */
 let muted = false;
@@ -617,12 +867,360 @@ const LEVEL_EXTRAS = [
 /* ─── Game state ─────────────────────────────────────────── */
 let score = 0, lives = 3, currentWorld = 0;
 let cameraX = 0, frameCount = 0;
-let gameState = 'loading'; // loading | playing | paused | dead | gameover | win | worldwin
+let gameState = 'loading'; // loading | ready | playing | paused | dead | gameover | win | worldwin
 let deadTimer = 0, worldWinTimer = 0;
 let coins = [], mushrooms = [];
+let currentPlayerName = '';
+let currentPlayerIp = '';
+let leaderboardEntries = [];
+let scoreSubmittedForRun = false;
+let localPlayerStats = {
+    bestScore: 0,
+    bestWorld: 1,
+    lastScore: 0,
+    lastWorld: 1,
+    lastOutcome: 'No runs yet',
+    updatedAt: '',
+};
 
 function isCoarsePointer() {
     return window.matchMedia('(pointer: coarse)').matches;
+}
+
+function readStorage(key, fallback = null) {
+    try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+    } catch (_err) {
+        return fallback;
+    }
+}
+
+function writeStorage(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (_err) {
+        // Ignore storage failures and keep the game usable.
+    }
+}
+
+function formatOutcome(outcome) {
+    if (outcome === 'win') return 'Victory';
+    if (outcome === 'gameover') return 'Game over';
+    if (outcome === 'registered') return 'Registered';
+    return outcome || 'No runs yet';
+}
+
+function syncLocalPlayerState() {
+    writeStorage(PLAYER_STATE_STORAGE_KEY, {
+        name: currentPlayerName,
+        ip: currentPlayerIp,
+        stats: localPlayerStats,
+    });
+}
+
+function syncLeaderboardCache() {
+    writeStorage(LEADERBOARD_CACHE_STORAGE_KEY, leaderboardEntries.slice(0, 20));
+}
+
+function renderLocalPlayerStats() {
+    localBestValueEl.textContent = `${localPlayerStats.bestScore} pts • W${localPlayerStats.bestWorld}`;
+    lastRunValueEl.textContent = localPlayerStats.updatedAt
+        ? `${localPlayerStats.lastScore} pts • W${localPlayerStats.lastWorld} • ${formatOutcome(localPlayerStats.lastOutcome)}`
+        : 'No runs saved';
+}
+
+function restoreLocalCache() {
+    let cachedPlayerName = '';
+    try {
+        cachedPlayerName = localStorage.getItem(PLAYER_NAME_STORAGE_KEY) || '';
+    } catch (_err) {
+        cachedPlayerName = '';
+    }
+    const cachedPlayerState = readStorage(PLAYER_STATE_STORAGE_KEY, null);
+    const cachedLeaderboard = readStorage(LEADERBOARD_CACHE_STORAGE_KEY, []);
+
+    if (cachedPlayerName) {
+        playerNameInput.value = String(cachedPlayerName).slice(0, 32);
+    }
+
+    if (cachedPlayerState?.name) {
+        currentPlayerName = String(cachedPlayerState.name).slice(0, 32);
+        currentPlayerIp = cachedPlayerState.ip || '';
+    }
+
+    if (cachedPlayerState?.stats) {
+        localPlayerStats = {
+            bestScore: Math.max(0, Number(cachedPlayerState.stats.bestScore) || 0),
+            bestWorld: Math.max(1, Number(cachedPlayerState.stats.bestWorld) || 1),
+            lastScore: Math.max(0, Number(cachedPlayerState.stats.lastScore) || 0),
+            lastWorld: Math.max(1, Number(cachedPlayerState.stats.lastWorld) || 1),
+            lastOutcome: String(cachedPlayerState.stats.lastOutcome || 'No runs yet'),
+            updatedAt: cachedPlayerState.stats.updatedAt || '',
+        };
+    }
+
+    if (Array.isArray(cachedLeaderboard) && cachedLeaderboard.length) {
+        leaderboardEntries = cachedLeaderboard;
+    }
+}
+
+function updateLocalScoreSnapshot(outcome) {
+    localPlayerStats.lastScore = score;
+    localPlayerStats.lastWorld = currentWorld + 1;
+    localPlayerStats.lastOutcome = outcome;
+    localPlayerStats.updatedAt = new Date().toISOString();
+
+    if (
+        score > localPlayerStats.bestScore ||
+        (score === localPlayerStats.bestScore && currentWorld + 1 > localPlayerStats.bestWorld)
+    ) {
+        localPlayerStats.bestScore = score;
+        localPlayerStats.bestWorld = currentWorld + 1;
+    }
+
+    renderLocalPlayerStats();
+    syncLocalPlayerState();
+}
+
+function syncLocalBestFromServer(playerData) {
+    if (!playerData) return;
+
+    const remoteBestScore = Math.max(0, Number(playerData.bestScore) || 0);
+    const remoteBestWorld = Math.max(1, Number(playerData.bestWorld) || 1);
+
+    if (
+        remoteBestScore > localPlayerStats.bestScore ||
+        (remoteBestScore === localPlayerStats.bestScore && remoteBestWorld > localPlayerStats.bestWorld)
+    ) {
+        localPlayerStats.bestScore = remoteBestScore;
+        localPlayerStats.bestWorld = remoteBestWorld;
+    }
+}
+
+function setPlayerStatus(message, tone = 'info') {
+    playerStatusEl.textContent = message;
+    playerStatusEl.dataset.tone = tone;
+}
+
+function renderCurrentPlayer() {
+    const visibleName = currentPlayerName || 'Not selected';
+    currentPlayerValueEl.textContent = visibleName;
+    playerNameLabelEl.textContent = currentPlayerName || 'No player';
+    currentIpValueEl.textContent = currentPlayerIp || 'Detecting...';
+    playerStartBtn.textContent = currentPlayerName ? 'Start / Restart' : 'Start Game';
+}
+
+function renderLeaderboard() {
+    leaderboardListEl.textContent = '';
+
+    if (!leaderboardEntries.length) {
+        const emptyEl = document.createElement('div');
+        emptyEl.id = 'leaderboard-empty';
+        emptyEl.textContent = 'No participants yet. Enter the first name and start the game.';
+        leaderboardListEl.appendChild(emptyEl);
+        return;
+    }
+
+    leaderboardEntries.forEach(entry => {
+        const item = document.createElement('div');
+        item.className = 'record-item';
+
+        const top = document.createElement('div');
+        top.className = 'record-top';
+
+        const rank = document.createElement('div');
+        rank.className = 'record-rank';
+        rank.textContent = `#${entry.rank}`;
+
+        const name = document.createElement('div');
+        name.className = 'record-name';
+        name.textContent = entry.name;
+
+        const scoreValue = document.createElement('div');
+        scoreValue.className = 'record-score';
+        scoreValue.textContent = `${entry.bestScore} pts`;
+
+        top.append(rank, name, scoreValue);
+
+        const ip = document.createElement('div');
+        ip.className = 'record-ip';
+        ip.textContent = `IP: ${entry.ip}`;
+
+        const meta = document.createElement('div');
+        meta.className = 'record-meta';
+        meta.textContent = `Best world: ${entry.bestWorld} • Games: ${entry.gamesPlayed}`;
+
+        item.append(top, ip, meta);
+        leaderboardListEl.appendChild(item);
+    });
+}
+
+function applyLeaderboardResponse(data) {
+    if (Array.isArray(data?.leaderboard)) {
+        leaderboardEntries = data.leaderboard;
+        syncLeaderboardCache();
+    }
+    if (data?.currentIp) {
+        currentPlayerIp = data.currentIp;
+    }
+    if (data?.player?.name) {
+        currentPlayerName = data.player.name;
+    }
+    if (data?.player?.ip) {
+        currentPlayerIp = data.player.ip;
+    }
+    syncLocalBestFromServer(data?.player);
+    renderCurrentPlayer();
+    renderLeaderboard();
+    renderLocalPlayerStats();
+    syncLocalPlayerState();
+}
+
+async function requestJson(url, options = {}) {
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...(options.headers || {}),
+        },
+    });
+
+    let data = null;
+    try {
+        data = await response.json();
+    } catch (_err) {
+        data = null;
+    }
+
+    if (!response.ok) {
+        throw new Error(data?.error || 'Request failed.');
+    }
+
+    return data;
+}
+
+async function loadLeaderboard(showStatus = false) {
+    if (showStatus) {
+        setPlayerStatus('Refreshing records...', 'info');
+    }
+
+    try {
+        const data = await requestJson('/api/leaderboard');
+        if (data?.currentIp) {
+            currentPlayerIp = data.currentIp;
+        }
+        if (Array.isArray(data?.leaderboard)) {
+            leaderboardEntries = data.leaderboard;
+        }
+        renderCurrentPlayer();
+        renderLeaderboard();
+        renderLocalPlayerStats();
+        syncLeaderboardCache();
+        syncLocalPlayerState();
+
+        if (showStatus) {
+            setPlayerStatus(
+                currentPlayerName ? `Ready: ${currentPlayerName}` : 'Enter a participant name before starting the game.',
+                currentPlayerName ? 'success' : 'info'
+            );
+        }
+    } catch (error) {
+        renderCurrentPlayer();
+        renderLeaderboard();
+        renderLocalPlayerStats();
+        setPlayerStatus(
+            leaderboardEntries.length
+                ? `Server unavailable, showing local cache: ${error.message}`
+                : `Could not load records: ${error.message}`,
+            leaderboardEntries.length ? 'info' : 'error'
+        );
+    }
+}
+
+async function beginPlayerSession(rawName) {
+    if (!booted) {
+        setPlayerStatus('Game assets are still loading. Try again in a moment.', 'info');
+        return;
+    }
+
+    const cleanName = String(rawName || '').trim().replace(/\s+/g, ' ').slice(0, 32);
+    if (!cleanName) {
+        setPlayerStatus('Please enter a participant name first.', 'error');
+        playerNameInput.focus();
+        return;
+    }
+
+    playerStartBtn.disabled = true;
+    refreshLeaderboardBtn.disabled = true;
+    setPlayerStatus('Saving player and detecting IP...', 'info');
+
+    try {
+        const data = await requestJson('/api/player', {
+            method: 'POST',
+            body: JSON.stringify({ name: cleanName }),
+        });
+
+        const previousPlayerName = currentPlayerName;
+        currentPlayerName = data.player.name;
+        currentPlayerIp = data.player.ip || data.currentIp || '';
+        leaderboardEntries = Array.isArray(data.leaderboard) ? data.leaderboard : leaderboardEntries;
+
+        if (previousPlayerName !== currentPlayerName) {
+            localPlayerStats = {
+                bestScore: Math.max(0, Number(data.player.bestScore) || 0),
+                bestWorld: Math.max(1, Number(data.player.bestWorld) || 1),
+                lastScore: 0,
+                lastWorld: 1,
+                lastOutcome: 'No runs yet',
+                updatedAt: '',
+            };
+        }
+        syncLocalBestFromServer(data.player);
+
+        try {
+            localStorage.setItem(PLAYER_NAME_STORAGE_KEY, currentPlayerName);
+        } catch (_err) {
+            // Ignore storage failures and keep the game usable.
+        }
+        playerNameInput.value = currentPlayerName;
+        renderCurrentPlayer();
+        renderLeaderboard();
+        renderLocalPlayerStats();
+        syncLocalPlayerState();
+        syncLeaderboardCache();
+        setPlayerStatus(`Player ${currentPlayerName} is ready. Good luck!`, 'success');
+        startGame();
+    } catch (error) {
+        setPlayerStatus(`Could not save player: ${error.message}`, 'error');
+    } finally {
+        playerStartBtn.disabled = false;
+        refreshLeaderboardBtn.disabled = false;
+    }
+}
+
+async function submitCurrentScore(outcome) {
+    if (scoreSubmittedForRun || !currentPlayerName) return;
+    scoreSubmittedForRun = true;
+    updateLocalScoreSnapshot(outcome);
+
+    try {
+        const data = await requestJson('/api/leaderboard', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: currentPlayerName,
+                score,
+                world: currentWorld + 1,
+                outcome,
+            }),
+        });
+
+        applyLeaderboardResponse(data);
+        setPlayerStatus(`Record saved: ${currentPlayerName} — ${score} pts`, 'success');
+    } catch (error) {
+        scoreSubmittedForRun = false;
+        setPlayerStatus(`Server unavailable, saved only locally: ${error.message}`, 'info');
+    }
 }
 
 function syncViewport() {
@@ -650,6 +1248,15 @@ function setPauseReason(title, subtitle) {
     pauseSubtitleEl.textContent = subtitle;
 }
 
+function setReadyState(message = 'Enter a participant name before starting the game.') {
+    gameState = 'ready';
+    clearTouchMovement();
+    stopBGM();
+    refreshHudState();
+    setPlayerStatus(message, currentPlayerName ? 'success' : 'info');
+    syncViewport();
+}
+
 function refreshHudState() {
     const paused = gameState === 'paused';
     const canPause = gameState === 'playing' || paused;
@@ -667,6 +1274,28 @@ function refreshHudState() {
     fullscreenBtn.setAttribute('aria-label', fullscreenActive ? 'Exit fullscreen' : 'Enter fullscreen');
     pauseFullscreenBtn.textContent = fullscreenActive ? 'Exit Fullscreen' : 'Enter Fullscreen';
     restartBtn.textContent = `Restart ${WORLDS[currentWorld]?.title || 'Game'}`;
+}
+
+function bootGame() {
+    if (booted) return;
+    booted = true;
+    playerStartBtn.disabled = false;
+
+    score = 0;
+    lives = 3;
+    scoreEl.textContent = 0;
+    livesEl.textContent = 3;
+    setPauseReason('Paused', 'Take a breath. Tap Continue or press P to keep going.');
+    loadWorld(0);
+    setReadyState(currentPlayerName ? `Player ${currentPlayerName} is ready. Press Start / Restart to play.` : 'Enter a participant name before starting the game.');
+
+    if (!loopStarted) {
+        loopStarted = true;
+        loop();
+    }
+
+    syncViewport();
+    requestAnimationFrame(syncViewport);
 }
 
 function pauseGame(title = 'Paused', subtitle = 'Take a breath. Tap Continue or press P to keep going.') {
@@ -753,6 +1382,10 @@ function restartGame() {
     stopMp3(dieAudio);
     stopMp3(winAudio);
     stopMp3(gameOverAudio);
+    if (!currentPlayerName) {
+        setReadyState('Enter a participant name before starting the game.');
+        return;
+    }
     gameState = 'playing';
     refreshHudState();
     startGame();
@@ -792,6 +1425,9 @@ function bindHoldButton(button, code) {
 }
 
 document.addEventListener('keydown', e => {
+    const isTypingField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target?.tagName);
+    if (isTypingField) return;
+
     if (e.code === 'KeyP') {
         e.preventDefault();
         togglePause();
@@ -815,6 +1451,9 @@ document.addEventListener('keydown', e => {
     }
 });
 document.addEventListener('keyup', e => {
+    const isTypingField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target?.tagName);
+    if (isTypingField) return;
+
     if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'].includes(e.code)) e.preventDefault();
     keys[e.code] = false;
 });
@@ -842,6 +1481,13 @@ pauseBtn.addEventListener('click', togglePause);
 resumeBtn.addEventListener('click', resumeGame);
 pauseFullscreenBtn.addEventListener('click', toggleFullscreen);
 restartBtn.addEventListener('click', restartGame);
+playerForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    await beginPlayerSession(playerNameInput.value);
+});
+refreshLeaderboardBtn.addEventListener('click', () => {
+    loadLeaderboard(true);
+});
 document.addEventListener('fullscreenchange', () => {
     refreshHudState();
     syncViewport();
@@ -851,7 +1497,7 @@ document.addEventListener('webkitfullscreenchange', () => {
     syncViewport();
 });
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
+    if (document.hidden && gameState === 'playing') {
         clearTouchMovement();
         pauseGame('Paused', 'Game auto-paused while the tab was hidden.');
     } else {
@@ -1392,7 +2038,7 @@ function drawPlatforms() {
 
 /* ─── Update ─────────────────────────────────────────────── */
 function update() {
-    if (gameState === 'paused') return;
+    if (gameState === 'ready' || gameState === 'paused') return;
     if (gameState === 'worldwin') {
         if (--worldWinTimer <= 0) {
             loadWorld(currentWorld + 1);
@@ -1407,6 +2053,7 @@ function update() {
             if (lives <= 0) {
                 gameState = 'gameover';
                 refreshHudState();
+                submitCurrentScore('gameover');
                 sfxGameOver();
             }
             else respawn();
@@ -1445,6 +2092,7 @@ function update() {
         } else {
             gameState = 'win';
             refreshHudState();
+            submitCurrentScore('win');
             sfxWin();
             stopBGM();
         }
@@ -1608,6 +2256,12 @@ function draw() {
         ctx.textAlign = 'center'; ctx.fillText('Loading faces...', 400, 240);
         ctx.textAlign = 'left';
     }
+    if (gameState === 'ready') {
+        overlay('rgba(0,0,0,0.58)');
+        bigText('ENTER PLAYER NAME', '#FFD700', 195);
+        smallText('Use the records panel to join the game', '#FFF', 258);
+        smallText(currentPlayerName ? `Ready: ${currentPlayerName}` : 'Name is required before the run starts', '#76FF03', 304);
+    }
 }
 
 function overlay(color) {
@@ -1627,7 +2281,13 @@ let loopStarted = false;
 function loop() { frameCount++; update(); draw(); requestAnimationFrame(loop); }
 
 function startGame() {
+    if (!currentPlayerName) {
+        setReadyState('Enter a participant name before starting the game.');
+        return;
+    }
+
     score = 0; lives = 3; gameState = 'playing';
+    scoreSubmittedForRun = false;
     scoreEl.textContent = 0; livesEl.textContent = 3;
     setPauseReason('Paused', 'Take a breath. Tap Continue or press P to keep going.');
     clearTouchMovement();
@@ -1639,6 +2299,12 @@ function startGame() {
     if (!loopStarted) { loopStarted = true; loop(); }
 }
 
+playerStartBtn.disabled = true;
+restoreLocalCache();
+renderCurrentPlayer();
+renderLocalPlayerStats();
+renderLeaderboard();
+loadLeaderboard(false);
 refreshHudState();
 syncViewport();
 requestAnimationFrame(syncViewport);
