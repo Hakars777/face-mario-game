@@ -22,7 +22,9 @@ body {
     align-items: center; justify-content: flex-start;
     min-height: 100vh; min-height: 100dvh;
     font-family: 'Segoe UI', sans-serif;
-    overflow: hidden; touch-action: none;
+    overflow: hidden;
+    touch-action: none;
+    overscroll-behavior: contain;
     padding: 12px 12px calc(12px + var(--safe-bottom));
     gap: 8px;
 }
@@ -224,6 +226,7 @@ body {
     width: 100%;
     height: var(--game-height);
     overflow: hidden;
+    touch-action: none;
 }
 canvas {
     width: 100%;
@@ -231,6 +234,7 @@ canvas {
     border: 3px solid #FFD700; border-radius: 6px;
     box-shadow: 0 0 30px rgba(255,215,0,0.25);
     display: block;
+    touch-action: none;
 }
 #controls {
     color: #88AACC; font-size: 12px;
@@ -257,6 +261,7 @@ canvas {
     gap: 12px;
     padding: 0 4px;
     pointer-events: none;
+    touch-action: none;
 }
 #dpad {
     display: flex;
@@ -410,7 +415,12 @@ canvas {
         align-items: center;
         gap: 12px;
     }
+    #app-shell {
+        order: 1;
+        width: 100%;
+    }
     #leaderboard-panel {
+        order: 2;
         width: min(var(--game-width), calc(100vw - 24px));
         flex: none;
     }
@@ -422,13 +432,34 @@ canvas {
     body {
         padding: 10px 10px calc(10px + var(--safe-bottom));
         gap: 6px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        touch-action: pan-y;
     }
     #page-shell {
+        width: 100%;
         gap: 10px;
     }
+    #app-shell {
+        gap: 6px;
+    }
     #leaderboard-panel {
+        width: 100%;
         padding: 14px 12px;
         border-radius: 18px;
+    }
+    #leaderboard-subtitle {
+        font-size: 12px;
+    }
+    .player-meta-row {
+        padding: 8px 9px;
+        font-size: 12px;
+    }
+    #records-header {
+        margin-top: 14px;
+    }
+    #leaderboard-list {
+        max-height: 180px;
     }
     #ui { letter-spacing: 1px; }
     #controls { font-size: 11px; gap: 6px 8px; }
@@ -444,6 +475,9 @@ canvas {
     #touch-controls { gap: 10px; }
     #controls { font-size: 10px; }
     #muteBtn { font-size: 12px; padding: 3px 10px; }
+    #leaderboard-panel {
+        padding: 12px 10px;
+    }
     .hud-btn {
         width: 38px;
         height: 38px;
@@ -460,12 +494,17 @@ canvas {
     #leaderboard-title {
         font-size: 20px;
     }
+    #leaderboard-list {
+        max-height: 150px;
+    }
 }
 @media (orientation: landscape) and (max-height: 540px) {
     body {
         padding-top: 8px;
         padding-bottom: calc(8px + var(--safe-bottom));
         gap: 5px;
+        overflow-y: auto;
+        touch-action: pan-y;
     }
     #ui {
         font-size: clamp(11px, 2.3vh, 16px);
@@ -474,6 +513,12 @@ canvas {
     #app-shell { gap: 5px; }
     #game-stage { gap: 6px; }
     #touch-controls { padding: 0 2px; }
+    #leaderboard-panel {
+        padding: 12px 10px;
+    }
+    #leaderboard-list {
+        max-height: 130px;
+    }
 }
 #app-shell:fullscreen,
 #app-shell:-webkit-full-screen {
