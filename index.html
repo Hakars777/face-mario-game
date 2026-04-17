@@ -2,28 +2,146 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Face Adventure - Arsen's Quest</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --game-width: 800px;
+    --game-height: 500px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --touch-size: clamp(54px, 14vw, 76px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; touch-action: manipulation; }
 body {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    min-height: 100vh; font-family: 'Segoe UI', sans-serif;
+    align-items: center; justify-content: flex-start;
+    min-height: 100vh; min-height: 100dvh;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden; touch-action: none;
+    padding: 12px 12px calc(12px + var(--safe-bottom));
+    gap: 8px;
 }
 #ui {
-    color: #FFD700; font-size: 20px; font-weight: bold;
-    margin-bottom: 10px; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-    letter-spacing: 3px;
+    color: #FFD700; font-size: clamp(13px, 3vw, 20px); font-weight: bold;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+    letter-spacing: 2px; text-align: center; width: 100%;
+    padding: 0 8px; line-height: 1.35;
+}
+#game-stage {
+    width: var(--game-width);
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+#game-wrapper {
+    position: relative;
+    width: 100%;
+    height: var(--game-height);
 }
 canvas {
-    border: 4px solid #FFD700; border-radius: 6px;
-    box-shadow: 0 0 40px rgba(255,215,0,0.25);
+    width: 100%;
+    height: 100%;
+    border: 3px solid #FFD700; border-radius: 6px;
+    box-shadow: 0 0 30px rgba(255,215,0,0.25);
     display: block;
 }
 #controls {
-    color: #88AACC; font-size: 13px; margin-top: 10px;
-    letter-spacing: 1px;
+    color: #88AACC; font-size: 12px;
+    letter-spacing: 1px; text-align: center;
+    width: min(var(--game-width), calc(100vw - 24px));
+    max-width: 100%;
+    display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: center;
+    gap: 6px 10px;
+    padding: 0 8px;
+}
+#controls .mobile-hint { display: none; }
+#muteBtn {
+    background: #333; color: #FFD700; border: 2px solid #FFD700;
+    border-radius: 6px; padding: 3px 12px; cursor: pointer; font-size: 13px;
+}
+
+/* ── Touch D-pad ── */
+#touch-controls {
+    width: 100%;
+    display: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 0 4px;
+    pointer-events: none;
+}
+#dpad {
+    display: flex;
+    gap: 10px;
+    pointer-events: all;
+}
+#btn-left, #btn-right {
+    width: var(--touch-size); height: var(--touch-size); border-radius: 50%;
+    background: rgba(255,255,255,0.18); border: 3px solid rgba(255,255,255,0.4);
+    color: #fff; font-size: clamp(22px, 5vw, 30px); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-user-select: none;
+    transition: background 0.1s, transform 0.1s;
+    pointer-events: all;
+}
+#btn-left:active, #btn-right:active,
+#btn-left.pressed, #btn-right.pressed {
+    background: rgba(255,215,0,0.45);
+    transform: scale(0.96);
+}
+#btn-jump {
+    width: calc(var(--touch-size) + 10px); height: calc(var(--touch-size) + 10px);
+    border-radius: 50%;
+    background: rgba(255,100,100,0.30); border: 3px solid rgba(255,150,150,0.6);
+    color: #fff; font-size: 13px; font-weight: bold; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1.05;
+    user-select: none; -webkit-user-select: none;
+    transition: background 0.1s, transform 0.1s;
+    pointer-events: all;
+}
+#btn-jump:active, #btn-jump.pressed {
+    background: rgba(255,80,80,0.55);
+    transform: scale(0.96);
+}
+@media (max-width: 820px), (pointer: coarse) {
+    #touch-controls { display: flex; }
+}
+@media (max-width: 820px) {
+    body {
+        padding: 10px 10px calc(10px + var(--safe-bottom));
+        gap: 6px;
+    }
+    #ui { letter-spacing: 1px; }
+    #controls { font-size: 11px; gap: 6px 8px; }
+    #controls .kb-hint { display: none; }
+    #controls .mobile-hint { display: inline; }
+}
+@media (max-width: 540px), (max-height: 680px) {
+    :root { --touch-size: clamp(48px, 14vw, 64px); }
+    #touch-controls { gap: 10px; }
+    #controls { font-size: 10px; }
+    #muteBtn { font-size: 12px; padding: 3px 10px; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+    body {
+        padding-top: 8px;
+        padding-bottom: calc(8px + var(--safe-bottom));
+        gap: 5px;
+    }
+    #ui {
+        font-size: clamp(11px, 2.3vh, 16px);
+        line-height: 1.2;
+    }
+    #game-stage { gap: 6px; }
+    #touch-controls { padding: 0 2px; }
 }
 </style>
 </head>
@@ -35,18 +153,40 @@ canvas {
     &nbsp;&nbsp;❤️ <span id="lives">3</span>
     &nbsp;&nbsp;👊 Left: <span id="enemies">0</span>
 </div>
-<canvas id="game" width="800" height="500"></canvas>
+<div id="game-stage">
+    <div id="game-wrapper">
+        <canvas id="game" width="800" height="500"></canvas>
+    </div>
+    <div id="touch-controls">
+        <div id="dpad">
+            <button id="btn-left">◀</button>
+            <button id="btn-right">▶</button>
+        </div>
+        <button id="btn-jump">▲<br>JUMP</button>
+    </div>
+</div>
 <div id="controls">
-    ← → Move &nbsp;|&nbsp; ↑ or SPACE — Jump &nbsp;|&nbsp; Jump ON TOP of enemies to defeat them!
-    &nbsp;&nbsp;<button id="muteBtn" onclick="toggleMute()" style="background:#333;color:#FFD700;border:2px solid #FFD700;border-radius:6px;padding:3px 12px;cursor:pointer;font-size:13px;">🔊 Mute</button>
+    <span class="kb-hint">← → Move &nbsp;|&nbsp; ↑ or SPACE — Jump &nbsp;|&nbsp; Jump ON TOP of enemies!</span>
+    <span class="mobile-hint">Touch buttons: left/right to move, jump to hop, tap jump to restart after game over.</span>
+    <button id="muteBtn" onclick="toggleMute()">🔊 Mute</button>
 </div>
 
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+const rootEl   = document.documentElement;
+const uiEl     = document.getElementById('ui');
+const controlsEl = document.getElementById('controls');
+const touchControlsEl = document.getElementById('touch-controls');
+const muteBtn = document.getElementById('muteBtn');
+const btnLeft = document.getElementById('btn-left');
+const btnRight = document.getElementById('btn-right');
+const btnJump = document.getElementById('btn-jump');
 const scoreEl  = document.getElementById('score');
 const livesEl  = document.getElementById('lives');
 const enemyEl  = document.getElementById('enemies');
+const BASE_W = canvas.width;
+const BASE_H = canvas.height;
 
 /* ─── Image loading ─────────────────────────────────────── */
 const IMG_FILES = {
@@ -67,6 +207,7 @@ setTimeout(() => { if (loaded < total) startGame(); }, 2500);
 /* ─── Audio ──────────────────────────────────────────────── */
 let muted = false;
 let AC = null;
+let bgmUnlocked = false;
 
 function getAC() {
     if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
@@ -133,7 +274,7 @@ function stopBGM() {
 
 function toggleMute() {
     muted = !muted;
-    document.getElementById('muteBtn').textContent = muted ? '🔇 Unmute' : '🔊 Mute';
+    muteBtn.textContent = muted ? '🔇 Unmute' : '🔊 Mute';
     [bgmAudio, dieAudio, winAudio, gameOverAudio].forEach(a => a.muted = muted);
     if (!muted && gameState === 'playing') bgmAudio.play().catch(()=>{});
 }
@@ -312,6 +453,21 @@ let gameState = 'loading'; // loading | playing | dead | gameover | win | worldw
 let deadTimer = 0, worldWinTimer = 0;
 let coins = [], mushrooms = [];
 
+function syncViewport() {
+    const viewport = window.visualViewport;
+    const viewportW = Math.max(280, Math.floor(viewport ? viewport.width : window.innerWidth));
+    const viewportH = Math.max(240, Math.floor(viewport ? viewport.height : window.innerHeight));
+    const touchH = touchControlsEl.offsetHeight || 0;
+    const chromeH = uiEl.offsetHeight + controlsEl.offsetHeight + touchH + 34;
+    const usableW = Math.max(220, viewportW - 24);
+    const usableH = Math.max(170, viewportH - chromeH);
+    const scale = Math.min(usableW / BASE_W, usableH / BASE_H, 1);
+    const width = Math.max(220, Math.floor(BASE_W * scale));
+    const height = Math.max(138, Math.round(width * BASE_H / BASE_W));
+    rootEl.style.setProperty('--game-width', `${width}px`);
+    rootEl.style.setProperty('--game-height', `${height}px`);
+}
+
 function loadWorld(n) {
     currentWorld = n;
     const w = WORLDS[n];
@@ -325,27 +481,105 @@ function loadWorld(n) {
     mushrooms = ex.mushrooms.map(m => ({...m, collected: false}));
     enemyEl.textContent = enemies.length;
     document.getElementById('worldNum').textContent = w.title;
+    syncViewport();
 }
 
 /* ─── Input ──────────────────────────────────────────────── */
 const keys = {};
-let bgmUnlocked = false;
+const activePointers = new Map();
+
+function unlockAudio() {
+    bgmUnlocked = true;
+    if (AC && AC.state === 'suspended') AC.resume().catch(()=>{});
+    if (!muted && gameState === 'playing') startBGM();
+}
+
+function attemptJump() {
+    if (!player.onGround || player.dead || gameState !== 'playing') return false;
+    player.vy = -13.5;
+    player.onGround = false;
+    sfxJump();
+    return true;
+}
+
+function restartGame() {
+    stopMp3(dieAudio);
+    stopMp3(winAudio);
+    stopMp3(gameOverAudio);
+    startGame();
+}
+
+function setKeyState(code, pressed) {
+    keys[code] = pressed;
+    if (pressed) unlockAudio();
+}
+
+function clearTouchMovement() {
+    keys['ArrowLeft'] = false;
+    keys['ArrowRight'] = false;
+    activePointers.clear();
+    [btnLeft, btnRight, btnJump].forEach(btn => btn.classList.remove('pressed'));
+}
+
+function bindHoldButton(button, code) {
+    const release = pointerId => {
+        if (activePointers.get(pointerId) !== code) return;
+        activePointers.delete(pointerId);
+        keys[code] = false;
+        button.classList.remove('pressed');
+    };
+
+    button.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        activePointers.set(e.pointerId, code);
+        setKeyState(code, true);
+        button.classList.add('pressed');
+        button.setPointerCapture?.(e.pointerId);
+    }, { passive: false });
+
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(type => {
+        button.addEventListener(type, e => release(e.pointerId));
+    });
+}
+
 document.addEventListener('keydown', e => {
-    keys[e.code] = true;
-    if (!bgmUnlocked && gameState === 'playing') {
-        bgmUnlocked = true;
-        startBGM();
-    }
-    if ((e.code === 'ArrowUp' || e.code === 'Space') && player.onGround && !player.dead && gameState === 'playing') {
-        player.vy = -13.5;
-        player.onGround = false;
-        sfxJump();
-    }
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'].includes(e.code)) e.preventDefault();
+    setKeyState(e.code, true);
+    if (e.code === 'ArrowUp' || e.code === 'Space') attemptJump();
     if (e.code === 'KeyR' && (gameState === 'gameover' || gameState === 'win')) {
-        startGame();
+        restartGame();
     }
 });
-document.addEventListener('keyup', e => { keys[e.code] = false; });
+document.addEventListener('keyup', e => {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'].includes(e.code)) e.preventDefault();
+    keys[e.code] = false;
+});
+bindHoldButton(btnLeft, 'ArrowLeft');
+bindHoldButton(btnRight, 'ArrowRight');
+btnJump.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    btnJump.classList.add('pressed');
+    unlockAudio();
+    if (gameState === 'gameover' || gameState === 'win') {
+        restartGame();
+        return;
+    }
+    attemptJump();
+}, { passive: false });
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach(type => {
+    btnJump.addEventListener(type, () => btnJump.classList.remove('pressed'));
+});
+canvas.addEventListener('pointerdown', () => {
+    unlockAudio();
+    if (gameState === 'gameover' || gameState === 'win') restartGame();
+}, { passive: true });
+window.addEventListener('blur', clearTouchMovement);
+window.addEventListener('resize', syncViewport);
+window.addEventListener('orientationchange', () => setTimeout(syncViewport, 150));
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncViewport);
+    window.visualViewport.addEventListener('scroll', syncViewport);
+}
 
 /* ─── AABB collision ─────────────────────────────────────── */
 function overlaps(a, b) {
@@ -1094,10 +1328,16 @@ function loop() { frameCount++; update(); draw(); requestAnimationFrame(loop); }
 function startGame() {
     score = 0; lives = 3; gameState = 'playing';
     scoreEl.textContent = 0; livesEl.textContent = 3;
+    clearTouchMovement();
     loadWorld(0);
-    startBGM();
+    if (bgmUnlocked) startBGM();
+    syncViewport();
+    requestAnimationFrame(syncViewport);
     if (!loopStarted) { loopStarted = true; loop(); }
 }
+
+syncViewport();
+requestAnimationFrame(syncViewport);
 </script>
 </body>
 </html>
