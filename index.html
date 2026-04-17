@@ -703,6 +703,7 @@ const dieAudio      = new Audio('mario-smert.mp3');
 const winAudio      = new Audio('super-mario-fanfara-okonchaniya-urovnya-muzyka-iz-igry-nintendo.mp3');
 const gameOverAudio = new Audio('super-mario-game-over.mp3');
 bgmAudio.loop = true;
+winAudio.preload = 'auto';
 
 function playMp3(a) {
     if (muted) return;
@@ -934,6 +935,7 @@ let score = 0, lives = 3, currentWorld = 0;
 let cameraX = 0, frameCount = 0;
 let gameState = 'loading'; // loading | ready | playing | paused | dead | gameover | win | worldwin
 let deadTimer = 0, worldWinTimer = 0;
+let worldWinTransitionReady = false;
 let coins = [], mushrooms = [];
 let currentPlayerName = '';
 let currentPlayerIp = '';
@@ -1070,6 +1072,29 @@ function syncLocalBestFromServer(playerData) {
         localPlayerStats.bestWorld = remoteBestWorld;
     }
 }
+
+function getWorldWinHoldFrames() {
+    if (muted) return 90;
+    if (Number.isFinite(winAudio.duration) && winAudio.duration > 0) {
+        return Math.max(180, Math.ceil(winAudio.duration * 60) + 18);
+    }
+    return 300;
+}
+
+function advanceToNextWorld() {
+    stopMp3(winAudio);
+    worldWinTransitionReady = false;
+    loadWorld(currentWorld + 1);
+    gameState = 'playing';
+    refreshHudState();
+    startBGM();
+}
+
+winAudio.addEventListener('ended', () => {
+    if (gameState === 'worldwin') {
+        worldWinTransitionReady = true;
+    }
+});
 
 function setPlayerStatus(message, tone = 'info') {
     if (!RECORDS_ENABLED) return;
@@ -2145,11 +2170,8 @@ function drawPlatforms() {
 function update() {
     if (gameState === 'ready' || gameState === 'paused') return;
     if (gameState === 'worldwin') {
-        if (--worldWinTimer <= 0) {
-            loadWorld(currentWorld + 1);
-            gameState = 'playing';
-            refreshHudState();
-            startBGM();
+        if (worldWinTransitionReady || --worldWinTimer <= 0) {
+            advanceToNextWorld();
         }
         return;
     }
@@ -2191,11 +2213,14 @@ function update() {
     if (player.x + player.w > goal.x + 10 && player.x < goal.x + goal.w - 10 &&
         player.y + player.h >= goal.y - 2) {
         if (currentWorld < WORLDS.length - 1) {
-            gameState = 'worldwin'; worldWinTimer = 150;
+            gameState = 'worldwin';
+            worldWinTimer = getWorldWinHoldFrames();
+            worldWinTransitionReady = false;
             refreshHudState();
             sfxWin();
         } else {
             gameState = 'win';
+            worldWinTransitionReady = false;
             refreshHudState();
             submitCurrentScore('win');
             sfxWin();
@@ -2343,13 +2368,15 @@ function draw() {
     }
     if (gameState === 'worldwin') {
         overlay('rgba(0,0,0,0.60)');
+        drawFireworks(0.8);
         const next = WORLDS[currentWorld + 1];
         bigText(`✅ ${WORLDS[currentWorld].title} Complete!`, '#76FF03', 190);
         smallText(`Next: ${next.title} — ${next.sub}`, '#FFD700', 262);
-        smallText('Get ready...', '#FFF', 310);
+        smallText('Next world starts after the victory fanfare', '#FFF', 310);
     }
     if (gameState === 'win') {
         overlay('rgba(0,0,0,0.68)');
+        drawFireworks(1.2);
         bigText('🏆 YOU WIN!', '#FFD700', 190);
         smallText('All 3 worlds conquered!', '#76FF03', 258);
         smallText(`Final Score: ${score}`, '#FFF', 302);
@@ -2371,6 +2398,57 @@ function draw() {
 
 function overlay(color) {
     ctx.fillStyle = color; ctx.fillRect(0,0,800,500);
+}
+function drawFireworks(power = 1) {
+    const bursts = [
+        { x: 105, y: 105, hue: 28,  phase: 0.04 },
+        { x: 230, y: 78,  hue: 202, phase: 0.19 },
+        { x: 392, y: 120, hue: 326, phase: 0.36 },
+        { x: 565, y: 84,  hue: 142, phase: 0.53 },
+        { x: 694, y: 126, hue: 48,  phase: 0.71 },
+    ];
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+
+    for (const burst of bursts) {
+        const cycle = (frameCount * (0.012 + power * 0.002) + burst.phase) % 1;
+        const alpha = 1 - cycle;
+        const radius = 16 + cycle * (88 + power * 18);
+        const core = 8 + cycle * 10;
+
+        ctx.fillStyle = `hsla(${burst.hue}, 100%, 72%, ${0.12 * alpha})`;
+        ctx.beginPath();
+        ctx.arc(burst.x, burst.y, radius * 0.62, 0, Math.PI * 2);
+        ctx.fill();
+
+        for (let i = 0; i < 14; i++) {
+            const angle = (Math.PI * 2 * i) / 14 + cycle * 1.6;
+            const inner = 8;
+            const outer = radius;
+            const px = burst.x + Math.cos(angle) * outer;
+            const py = burst.y + Math.sin(angle) * outer;
+
+            ctx.strokeStyle = `hsla(${burst.hue + i * 6}, 100%, 70%, ${0.7 * alpha})`;
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            ctx.moveTo(burst.x + Math.cos(angle) * inner, burst.y + Math.sin(angle) * inner);
+            ctx.lineTo(px, py);
+            ctx.stroke();
+
+            ctx.fillStyle = `hsla(${burst.hue + i * 6}, 100%, 76%, ${0.95 * alpha})`;
+            ctx.beginPath();
+            ctx.arc(px, py, 2.6 + power * 0.35, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.fillStyle = `hsla(${burst.hue + 18}, 100%, 85%, ${0.9 * alpha})`;
+        ctx.beginPath();
+        ctx.arc(burst.x, burst.y, core, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    ctx.restore();
 }
 function bigText(t, col, y) {
     ctx.fillStyle = col; ctx.font = 'bold 54px Arial';
@@ -2398,6 +2476,7 @@ function startGame() {
 
     score = 0; lives = 3; gameState = 'playing';
     scoreSubmittedForRun = false;
+    worldWinTransitionReady = false;
     scoreEl.textContent = 0; livesEl.textContent = 3;
     setPauseReason('Paused', 'Take a breath. Tap Continue or press P to keep going.');
     clearTouchMovement();
